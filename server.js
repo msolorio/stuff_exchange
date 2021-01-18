@@ -7,12 +7,10 @@ const authController = require('./controllers/authController');
 const app = express();
 const PORT = 4000;
 
+// CONFIG / MIDDLEWARE
 app.set('view engine', 'ejs');
-
 app.use(express.static(`${__dirname}/public`));
-
 app.use(bodyParser.urlencoded({extended: true}));
-
 app.use(session({
   secret: 'milo the barking dog',
   resave: false,
@@ -22,7 +20,10 @@ app.use(session({
   }
 }));
 
+
+// CONTROLLERS
 app.use('/', authController);
+
 
 app.get('/', protectRoute, (req, res) => {
   res.render('account', {
@@ -30,13 +31,16 @@ app.get('/', protectRoute, (req, res) => {
   });
 });
 
+
 app.get('/welcome', (req, res) => {
   res.render('welcome');
 });
 
+
 app.get('*', (req, res) => {
   res.redirect('/welcome');
 })
+
 
 app.listen(PORT, () => {
   console.log(`
