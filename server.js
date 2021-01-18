@@ -9,6 +9,8 @@ const PORT = 4000;
 
 app.set('view engine', 'ejs');
 
+app.use(express.static(`${__dirname}/public`));
+
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(session({
@@ -23,7 +25,7 @@ app.use(session({
 app.use('/', authController);
 
 app.get('/', protectRoute, (req, res) => {
-  res.render('home', {
+  res.render('account', {
     username: req.session.currentUser.username
   });
 });

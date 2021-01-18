@@ -9,6 +9,8 @@ router.get('/signup', (req, res) => {
   res.render('signup');
 });
 
+
+// HANDLES SUBMIT OF SIGNUP FORM
 router.post('/signup', async (req, res) => {
   // Verify req.body has username and password
   if (!req.body.username || !req.body.password) {
@@ -43,10 +45,13 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+
 router.get('/login', (req, res) => {
   res.render('login');
 });
 
+
+// HANDLES SUBMIT OF LOGIN FORM
 router.post('/login', async (req, res) => {
   try {
     // Get user by username
