@@ -10,7 +10,7 @@ const db = require('../models');
 ////////////////////////////////////////////////////////////////////////////
 router.get('/signup', (req, res) => {
   console.log('message:', req.query.message);
-  res.render('signup', {
+  res.render('auth/signup', {
     message: req.query.message
   });
 });
@@ -45,6 +45,8 @@ router.post('/signup', async (req, res) => {
     // Create new User
     await db.User.create(newUser);
 
+    // TODO: Add createdUser as req.session.currentUser
+    // TODO: Redirect to Account Page
     // Direct to login page
     return res.redirect('/login');
 
@@ -59,7 +61,7 @@ router.post('/signup', async (req, res) => {
 // LOGIN PAGE
 ////////////////////////////////////////////////////////////////////////////
 router.get('/login', (req, res) => {
-  res.render('login', {
+  res.render('auth/login', {
     message: req.query.message
   });
 });

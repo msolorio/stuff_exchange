@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('./User');
+const Item = require('./Item');
 
 const connectionString = 'mongodb://localhost:27017/stuff-exchange';
 const mongooseOptions = {
@@ -23,5 +24,6 @@ mongoose.connection.on('error', (err) => {
 });
 
 module.exports = {
-  User
+  User,
+  Item,
 };

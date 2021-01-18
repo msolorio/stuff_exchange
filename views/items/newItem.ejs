@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../partials/head', { title: 'Create New Item'}); %>
+<body>
+  <h1>Create New Item</h1>
+
+  <form action="/items" method="POST">
+    <div>
+      <label for="itemName">Name:</label>
+      <input type="text" name="itemName">
+    </div>
+
+    <div>
+      <label for="description">Description:</label>
+      <textarea name="description"></textarea>
+    </div>
+
+    <div>
+      <label for="img">Image:</label>
+      <input type="text" name="img">
+    </div>
+
+    <div>
+      <label for="price">Price:</label>
+      <input type="text" name="price">
+    </div>
+
+    <button type="submit">Log In</button>
+  </form>
+</body>
+</html>

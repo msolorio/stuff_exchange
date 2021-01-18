@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const protectRoute = require('./utilities/protectRoute');
 const authController = require('./controllers/authController');
+const itemsController = require('./controllers/itemsController');
 const app = express();
 const PORT = 4000;
 
@@ -23,6 +24,7 @@ app.use(session({
 
 // CONTROLLERS
 app.use('/', authController);
+app.use('/items', protectRoute, itemsController);
 
 
 app.get('/', protectRoute, (req, res) => {
