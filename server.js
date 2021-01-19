@@ -6,14 +6,14 @@ const protectRoute = require('./utilities/protectRoute');
 const authController = require('./controllers/authController');
 const itemsController = require('./controllers/itemsController');
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 // CONFIG / MIDDLEWARE
 app.set('view engine', 'ejs');
 app.use(express.static(`${__dirname}/public`));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
-  secret: 'milo the barking dog',
+  secret: process.env.SESSION_SECRET || 'milo the barking dog',
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -50,3 +50,4 @@ Your server is running on PORT: ${PORT}.
 You better go and catch it...`
   );
 });
+
