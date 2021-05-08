@@ -1,6 +1,5 @@
 const express = require('express');
 const ejs = require('ejs');
-const bodyParser = require('body-parser');
 const session = require('express-session');
 const protectRoute = require('./utilities/protectRoute');
 const authController = require('./controllers/authController');
@@ -10,8 +9,15 @@ const PORT = process.env.PORT || 4000;
 
 // CONFIG / MIDDLEWARE
 app.set('view engine', 'ejs');
+
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+
+  next();
+});
+
 app.use(express.static(`${__dirname}/public`));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: true}));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'milo the barking dog',
   resave: false,
@@ -28,6 +34,7 @@ app.use('/items', protectRoute, itemsController);
 
 
 app.get('/', protectRoute, (req, res) => {
+  console.l
   res.render('account', {
     username: req.session.currentUser.username
   });

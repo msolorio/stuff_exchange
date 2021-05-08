@@ -1,3 +1,7 @@
 body {
   background: lightblue;
 }
+
+.item-img {
+  width: 150px;
+}

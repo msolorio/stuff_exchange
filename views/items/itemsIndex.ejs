@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head', { title: 'Search Items' }) %>
+</head>
+<body>
+
+  <%- include('../partials/header') %>
+
+  <h2>All Items</h2>
+
+  <ul>
+    <% allItems.forEach((item) => { %>
+      <a href="/items/<%= item._id %>">
+        <li>
+          <p><%= item.itemName %></p>
+  
+          <img class="item-img" src="<%= item.img %>" alt="<%= item.itemName %>">
+  
+          <p>$<%= item.price %></p>
+        </li>
+      </a>
+    <% }); %>
+  </ul>
+</body>
+</html>

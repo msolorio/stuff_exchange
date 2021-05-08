@@ -4,22 +4,41 @@ const protectRoute = require('../utilities/protectRoute');
 const db = require('../models');
 
 
-router.get('/new', protectRoute, (req, res) => {
-  console.log('Made GET to /items/new');
-  res.render('items/newItem');
+
+// Items Index Route ===========================================//
+router.get('/', protectRoute, async (req, res) => {
+  const allItems = await db.Item.find({});
+
+  console.log('allItems ==>', allItems);
+
+  res.render('./items/itemsIndex', { allItems });
 });
 
+
+
+// Items New Route ============================================//
+router.get('/new', protectRoute, (req, res) => {
+  console.log('Made GET to /items/new');
+  res.render('./items/itemsNew');
+});
+
+
+
+// Items Show Route ===========================================//
 router.get('/:itemId', protectRoute, async (req, res) => {
+
   // Get Item by id
   const itemById = await db.Item.findById(req.params.itemId).populate('seller').exec();
 
   console.log('itemById:', itemById);
   // pass item data to template
-  res.render('items/showItem', {
+  res.render('./items/itemsShow', {
     item: itemById
   });
-
 });
+
+
+
 
 router.post('/', protectRoute, async (req, res) => {
   console.log('req.body:', req.body);
@@ -39,8 +58,6 @@ router.post('/', protectRoute, async (req, res) => {
     // Create new item
     const createdItem = await db.Item.create(newItem);
 
-    console.log('createdItem:', createdItem);
-
     res.redirect(`/items/${createdItem._id}`);
   } catch(err) {
     console.log(err);
@@ -48,6 +65,14 @@ router.post('/', protectRoute, async (req, res) => {
   }
 
   // Direct to Item show page
+});
+
+
+
+router.delete('/:itemId', protectRoute, async (req, res) => {
+  console.log(`hit DELETE on /item/${req.params.itemId}`);
+  
+  res.redirect('/items');
 });
 
 module.exports = router;
