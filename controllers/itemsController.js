@@ -9,8 +9,6 @@ const db = require('../models');
 router.get('/', protectRoute, async (req, res) => {
   const allItems = await db.Item.find({});
 
-  console.log('allItems ==>', allItems);
-
   res.render('./items/itemsIndex', { allItems });
 });
 
@@ -30,7 +28,6 @@ router.get('/myitems', protectRoute, async (req, res) => {
 
 // Items New Route ============================================//
 router.get('/new', protectRoute, (req, res) => {
-  console.log('Made GET to /items/new');
   res.render('./items/itemsNew');
 });
 
@@ -38,14 +35,13 @@ router.get('/new', protectRoute, (req, res) => {
 
 // Items Show Route ===========================================//
 router.get('/:itemId', protectRoute, async (req, res) => {
+  const foundItem = await db.Item.findById(req.params.itemId).populate('seller').exec();
 
-  // Get Item by id
-  const itemById = await db.Item.findById(req.params.itemId).populate('seller').exec();
+  const userIsSeller = req.session.currentUser._id === foundItem.seller.id;
 
-  console.log('itemById:', itemById);
-  // pass item data to template
   res.render('./items/itemsShow', {
-    item: itemById
+    item: foundItem,
+    userIsSeller: userIsSeller
   });
 });
 
@@ -53,11 +49,6 @@ router.get('/:itemId', protectRoute, async (req, res) => {
 
 
 router.post('/', protectRoute, async (req, res) => {
-  console.log('req.body:', req.body);
-  console.log('req.session.currentUser:', req.session.currentUser);
-
-  console.log('Hit POST to /item');
-
   const newItem = {
     itemName: req.body.itemName,
     description: req.body.description,
@@ -67,7 +58,6 @@ router.post('/', protectRoute, async (req, res) => {
   }
 
   try {
-    // Create new item
     const createdItem = await db.Item.create(newItem);
 
     res.redirect(`/items/${createdItem._id}`);
@@ -75,8 +65,6 @@ router.post('/', protectRoute, async (req, res) => {
     console.log(err);
     res.redirect('/items/new?message=There was an error creating your item in the database');
   }
-
-  // Direct to Item show page
 });
 
 
@@ -94,9 +82,6 @@ router.get('/:itemId/edit', protectRoute, async (req, res) => {
 
 
 router.put('/:itemId', protectRoute, async (req, res) => {
-  // Update item
-  console.log(req.body);
-  // 
   db.Item.findByIdAndUpdate(
     req.params.itemId,
     req.body,
@@ -107,15 +92,12 @@ router.put('/:itemId', protectRoute, async (req, res) => {
       res.redirect(`/items/${req.params.itemId}`);
     }
   )
-
-})
-
+});
 
 
 
-router.delete('/:itemId', protectRoute, async (req, res) => {
-  console.log(`hit DELETE on /item/${req.params.itemId}`);
-  
+
+router.delete('/:itemId', protectRoute, async (req, res) => {  
   await db.Item.findByIdAndDelete(req.params.itemId);
 
   res.redirect('/items');

@@ -21,12 +21,13 @@
     
     <p>Posted: <%= `${item.createdAt.getMonth()+1}/${item.createdAt.getDate()}/${item.createdAt.getFullYear()}` %></p>
   
-    
-    <button><a href="/items/<%= item._id %>/edit">Edit</a></button>
-    
-    <form action="/items/<%= item._id %>?_method=DELETE" method="POST">
-      <button type="submit">Delete</button>
-    </form>
+    <% if (userIsSeller) { %>
+      <button><a href="/items/<%= item._id %>/edit">Edit</a></button>
+      
+      <form action="/items/<%= item._id %>?_method=DELETE" method="POST">
+        <button type="submit">Delete</button>
+      </form>
+    <% } %>
   </section>
 
 </body>
