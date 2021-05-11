@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <%- include('../partials/head', { title: 'Create New Item' }); %>
+
+  <script>UPLOADCARE_PUBLIC_KEY = "d2748b8555c62fe3e6a2";</script>
+  <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
 <body>
   <%- include('../partials/header') %>
 
@@ -17,14 +20,15 @@
       <textarea name="description"></textarea>
     </div>
 
-    <div>
-      <label for="img">Image:</label>
-      <input type="text" name="img">
-    </div>
-
+    
     <div>
       <label for="price">Price:</label>
       <input type="text" name="price">
+    </div>
+    
+    <div>
+      <label for="img">Image:</label>
+      <input type="hidden" role="uploadcare-uploader" name="img" />
     </div>
 
     <button type="submit">Create Item</button>

@@ -53,7 +53,7 @@ app.get('/', protectRoute, (req, res) => {
 
 
 app.get('/welcome', (req, res) => {
-  res.render('welcome');
+  res.render('welcome', { currentUser: req.session.currentUser });
 });
 
 

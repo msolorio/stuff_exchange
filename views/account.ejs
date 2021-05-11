@@ -2,11 +2,11 @@
 <html lang="en">
 <%- include('./partials/head', { title: 'Account' }); %>
 <body>
-  <%- include('./partials/header') %>
+  <%- include('./partials/header', { currentUser }) %>
   <h1>My Account</h1>
-  <p>User: <%= user.username %></p>
+  <p>User: <%= currentUser.username %></p>
 
-  <p>Email: <%= user.email %></p>
+  <p>Email: <%= currentUser.email %></p>
 
   <a href="/users/logout"><button>Logout</button></a>
 </body>

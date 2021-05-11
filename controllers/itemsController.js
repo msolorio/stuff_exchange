@@ -9,7 +9,10 @@ const db = require('../models');
 router.get('/', protectRoute, async (req, res) => {
   const allItems = await db.Item.find({});
 
-  res.render('./items/itemsIndex', { allItems });
+  res.render('./items/itemsIndex', {
+    allItems: allItems,
+    currentUser: req.session.currentUser
+  });
 });
 
 
@@ -20,7 +23,10 @@ router.get('/myitems', protectRoute, async (req, res) => {
   // Get the logged in user's items
   db.Item.find({ seller: req.session.currentUser._id }, (err, usersItems) => {
     // Render template passing in items data
-    res.render('./items/itemsMyItems', { usersItems });
+    res.render('./items/itemsMyItems', {
+      usersItems: usersItems,
+      currentUser: req.session.currentUser
+    });
   });
 });
 
@@ -28,7 +34,7 @@ router.get('/myitems', protectRoute, async (req, res) => {
 
 // Items New Route ============================================//
 router.get('/new', protectRoute, (req, res) => {
-  res.render('./items/itemsNew');
+  res.render('./items/itemsNew', { currentUser: req.session.currentUser });
 });
 
 
@@ -41,7 +47,8 @@ router.get('/:itemId', protectRoute, async (req, res) => {
 
   res.render('./items/itemsShow', {
     item: foundItem,
-    userIsSeller: userIsSeller
+    userIsSeller: userIsSeller,
+    currentUser: req.session.currentUser
   });
 });
 

@@ -12,7 +12,8 @@ const router = express.Router();
 router.get('/signup', (req, res) => {
   console.log('message:', req.query.message);
   res.render('auth/signup', {
-    message: req.query.message
+    message: req.query.message,
+    currentUser: req.session.currentUser
   });
 });
 
@@ -63,7 +64,8 @@ router.post('/', async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 router.get('/login', (req, res) => {
   res.render('auth/login', {
-    message: req.query.message
+    message: req.query.message,
+    currentUser: req.session.currentUser
   });
 });
 
@@ -103,7 +105,7 @@ router.post('/login', async (req, res) => {
 // ACCOUNT PAGE
 /////////////////////////////////////////////////////////////////
 router.get('/myaccount', protectRoute, (req, res) => {
-  res.render('account', { user: req.session.currentUser });
+  res.render('account', { currentUser: req.session.currentUser });
 });
 
 
