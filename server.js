@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const methodOverride = require('method-override');
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
 app.use(express.static(`${__dirname}/public`));
 app.use(express.urlencoded({extended: true}));
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'milo the barking dog',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {

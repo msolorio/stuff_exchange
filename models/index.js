@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('./User');
 const Item = require('./Item');
 
-const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/stuff-exchange';
+const connectionString = process.env.MONGODB_URI;
 const mongooseOptions = {
   useNewUrlParser: true,
   useFindAndModify: false,

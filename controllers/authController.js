@@ -105,7 +105,7 @@ router.post('/login', async (req, res) => {
 // ACCOUNT PAGE
 /////////////////////////////////////////////////////////////////
 router.get('/myaccount', protectRoute, (req, res) => {
-  res.render('account', { currentUser: req.session.currentUser });
+res.render('account', { currentUser: req.session.currentUser });
 });
 
 

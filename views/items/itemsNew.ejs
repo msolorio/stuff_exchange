@@ -2,10 +2,10 @@
 <html lang="en">
   <%- include('../partials/head', { title: 'Create New Item' }); %>
 
-  <script>UPLOADCARE_PUBLIC_KEY = "d2748b8555c62fe3e6a2";</script>
+  <script>UPLOADCARE_PUBLIC_KEY = '<%= uploadcarePublicKey %>'</script>
   <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
 <body>
-  <%- include('../partials/header') %>
+  <%- include('../partials/header', { currentUser: currentUser }) %>
 
   <h2>Create New Item</h2>
 

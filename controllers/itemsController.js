@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const router = express.Router();
 const protectRoute = require('../utilities/protectRoute');
 const db = require('../models');
@@ -34,7 +35,10 @@ router.get('/myitems', protectRoute, async (req, res) => {
 
 // Items New Route ============================================//
 router.get('/new', protectRoute, (req, res) => {
-  res.render('./items/itemsNew', { currentUser: req.session.currentUser });
+  res.render('./items/itemsNew', {
+    currentUser: req.session.currentUser,
+    uploadcarePublicKey: process.env.UPLOADCARE_PUBLIC_KEY
+  });
 });
 
 

@@ -3,7 +3,9 @@
 <%- include('./partials/head', { title: 'Account' }); %>
 <body>
   <%- include('./partials/header', { currentUser }) %>
+
   <h1>My Account</h1>
+
   <p>User: <%= currentUser.username %></p>
 
   <p>Email: <%= currentUser.email %></p>
