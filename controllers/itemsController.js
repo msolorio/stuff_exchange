@@ -16,6 +16,18 @@ router.get('/', protectRoute, async (req, res) => {
 
 
 
+
+// My Items ===================================================//
+router.get('/myitems', protectRoute, async (req, res) => {
+  // Get the logged in user's items
+  db.Item.find({ seller: req.session.currentUser._id }, (err, usersItems) => {
+    // Render template passing in items data
+    res.render('./items/itemsMyItems', { usersItems });
+  });
+});
+
+
+
 // Items New Route ============================================//
 router.get('/new', protectRoute, (req, res) => {
   console.log('Made GET to /items/new');
@@ -69,9 +81,43 @@ router.post('/', protectRoute, async (req, res) => {
 
 
 
+
+router.get('/:itemId/edit', protectRoute, async (req, res) => {
+  // Get data for item by id
+  const item = await db.Item.findById(req.params.itemId);
+
+  // Serve up edit template
+  res.render('./items/itemsEdit', { item });
+});
+
+
+
+
+router.put('/:itemId', protectRoute, async (req, res) => {
+  // Update item
+  console.log(req.body);
+  // 
+  db.Item.findByIdAndUpdate(
+    req.params.itemId,
+    req.body,
+    { new: true },
+    (err, updatedItem) => {
+      if (err) return console.log(err);
+
+      res.redirect(`/items/${req.params.itemId}`);
+    }
+  )
+
+})
+
+
+
+
 router.delete('/:itemId', protectRoute, async (req, res) => {
   console.log(`hit DELETE on /item/${req.params.itemId}`);
   
+  await db.Item.findByIdAndDelete(req.params.itemId);
+
   res.redirect('/items');
 });
 

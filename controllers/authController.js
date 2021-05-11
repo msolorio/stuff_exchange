@@ -1,9 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const router = express.Router();
 const db = require('../models');
+const protectRoute = require('../utilities/protectRoute');
+const router = express.Router();
 
-// CURRENT ROUTE: /
+// CURRENT ROUTE: /users
 
 ////////////////////////////////////////////////////////////////////////////
 // SIGNUP PAGE
@@ -19,17 +20,17 @@ router.get('/signup', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 // HANDLES SUBMIT OF SIGNUP FORM
 ////////////////////////////////////////////////////////////////////////////
-router.post('/signup', async (req, res) => {
+router.post('/', async (req, res) => {
   // Verify req.body has username and password
   if (!req.body.username || !req.body.password) {
-    return res.redirect('/signup?message=Username and password fields are required.');
+    return res.redirect('/users/signup?message=Username and password fields are required.');
   }
 
   try {
     // Check if username already exists
     const existingUser = await db.User.findOne({username: req.body.username});
 
-    if (existingUser) return res.redirect('/signup?message=A user with that username already exists.');
+    if (existingUser) return res.redirect('/users/signup?message=A user with that username already exists. Please try another username.');
     
     // Generate salt and hash user's password
     const salt = await bcrypt.genSalt(10);
@@ -48,11 +49,11 @@ router.post('/signup', async (req, res) => {
     // TODO: Add createdUser as req.session.currentUser
     // TODO: Redirect to Account Page
     // Direct to login page
-    return res.redirect('/login');
+    return res.redirect('/users/login');
 
   } catch(err) {
     console.log(err);
-    return res.redirect('/signup?message=There was an error signing you up.');
+    return res.redirect('/users/signup?message=There was an error signing you up.');
   }
 });
 
@@ -93,6 +94,30 @@ router.post('/login', async (req, res) => {
     console.log(err);
     return res.redirect('/login?message=There was an issue verifying your user.');
   }
-})
+});
+
+
+
+
+/////////////////////////////////////////////////////////////////
+// ACCOUNT PAGE
+/////////////////////////////////////////////////////////////////
+router.get('/myaccount', protectRoute, (req, res) => {
+  res.render('account', { user: req.session.currentUser });
+});
+
+
+
+
+///////////////////////////////////////////////////////////////////////////
+// HANDLES LOGOUT
+///////////////////////////////////////////////////////////////////////////
+router.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) return console.log(err);
+
+    res.redirect('/');
+  });
+});
 
 module.exports = router;

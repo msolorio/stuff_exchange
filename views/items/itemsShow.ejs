@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('../partials/head', { title: 'View Item'}); %>
+  <%- include('../partials/head', { title: 'View Item' }); %>
 <body>
   <%- include('../partials/header') %>
-
-  <section>
-    <h2>View Item</h2>
-    
-    <p><%= item.itemName %></p>
-    
-    <p>$<%= item.price %></p>
-    
-    <p>Seller: <%= item.seller.username %></p>
-    
-    <p>Posted: <%= item.createdAt %></p>
   
-    <p><%= item.description %></p>
-
-    <button><a href="">Edit</a></button>
-    
-    <button><a href="">Delete</a></button>
-  </section>
-
   <section>
     <% if (item.img) { %>
       <img class="item-img" src="<%= item.img %>" alt="<%= item.itemName %>">
     <% } %>
   </section>
+
+  <section>
+    <p><%= item.itemName %></p>
+    
+    <p>$<%= item.price %></p>
+    
+    <p><%= item.description %></p>
+
+    <p>Seller: <%= item.seller.username %></p>
+    
+    <p>Posted: <%= `${item.createdAt.getMonth()+1}/${item.createdAt.getDate()}/${item.createdAt.getFullYear()}` %></p>
+  
+    
+    <button><a href="/items/<%= item._id %>/edit">Edit</a></button>
+    
+    <form action="/items/<%= item._id %>?_method=DELETE" method="POST">
+      <button type="submit">Delete</button>
+    </form>
+  </section>
+
 </body>
 </html>

@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <%- include('../partials/head', { title: 'Search Items' }) %>
-</head>
+<%- include('../partials/head', { title: 'My Items' }); %>
 <body>
-
   <%- include('../partials/header') %>
-
-  <h2>All Items</h2>
+  
+  <h1>My Items</h1>
 
   <ul>
-    <% allItems.forEach((item) => { %>
+    <% usersItems.forEach((item) => { %>
       <%- include('../partials/itemCard', { item: item }); %>
     <% }); %>
   </ul>

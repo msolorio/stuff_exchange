@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('../partials/head', { title: 'Signup'}); %>
+  <%- include('../partials/head', { title: 'Signup' }); %>
 <body>
+  <%- include('../partials/header') %>
   <h1>Create an Account</h1>
 
   <% if (message) { %>
     <p>Message: <%= message %></p>
   <% } %>
 
-  <form action="/signup" method="POST">
+  <form action="/users" method="POST">
     <div>
       <label for="username">Username:</label>
       <input type="text" name="username">

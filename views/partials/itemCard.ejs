@@ -1,0 +1,16 @@
+<li>Item Card</li>
+
+<a href="/items/<%= item._id %>">
+  <li>
+    <p><%= item.itemName %></p>
+    
+    <p>$<%= item.price %></p>
+
+    <img
+      class="item-img"
+      src="<%= item.img %>"
+      alt="<%= item.itemName %>"
+    >
+  </li>
+</a>
+

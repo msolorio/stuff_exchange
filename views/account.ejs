@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include('./partials/head', { title: 'Account'}); %>
+<%- include('./partials/head', { title: 'Account' }); %>
 <body>
   <%- include('./partials/header') %>
-  <h1>Account Page</h1>
-  <p>User: <%= username %></p>
+  <h1>My Account</h1>
+  <p>User: <%= user.username %></p>
+
+  <p>Email: <%= user.email %></p>
+
+  <a href="/users/logout"><button>Logout</button></a>
 </body>
 </html>

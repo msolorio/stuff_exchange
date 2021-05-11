@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../partials/head', { title: 'Edit Item' }); %>
+<body>
+  <%- include('../partials/header') %>
+
+  <h2>Edit an Item</h2>
+
+  <form action="/items/<%= item._id %>?_method=PUT" method="POST">
+    <div>
+      <label for="itemName">Name:</label>
+      <input type="text" name="itemName" value="<%= item.itemName %>">
+    </div>
+
+    <div>
+      <label for="description">Description:</label>
+      <textarea name="description"><%= item.description %></textarea>
+    </div>
+
+    <div>
+      <label for="img">Image:</label>
+      <input type="text" name="img" value="<%= item.img %>">
+    </div>
+
+    <div>
+      <label for="price">Price:</label>
+      <input type="text" name="price" value="<%= item.price %>">
+    </div>
+
+    <button type="submit">Edit Item</button>
+  </form>
+</body>
+</html>
