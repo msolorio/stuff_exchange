@@ -37,15 +37,17 @@ router.get('/:conversationId', (req, res) => {
   // Find existing convo and render
   } else {
 
-    db.Conversation.findById(req.params.conversationId, (err, foundConvo) => {
-      if (err) return console.log(err);
+    db.Conversation.findById(req.params.conversationId)
+      .populate('members messages item')
+      .exec((err, foundConvo) => {
+        if (err) return console.log(err);
 
-      // TODO: RENDER CONVO INFO AND MESSAGES TO TEMPLATE
-      console.log('found convo ==>', foundConvo);
-  
-      return renderConvoShow(req, res, foundConvo, null);
-    });
-
+        // TODO: RENDER CONVO INFO AND MESSAGES TO TEMPLATE
+        console.log('found convo ==>', foundConvo);
+    
+        return renderConvoShow(req, res, foundConvo, null);
+      }
+    );
   } 
 });
 
