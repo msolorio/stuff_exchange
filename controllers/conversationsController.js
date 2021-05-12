@@ -82,7 +82,7 @@ router.post('/', (req, res) => {
     db.Conversation.create(newConversation, (err, createdConvo) => {
       if (err) return console.log(err);
 
-      res.redirect(`/conversations/${createdConvo._id}?itemid=${req.body.item}`);
+      res.redirect(`/conversations/${createdConvo._id}`);
     });
   });
 });
