@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head', { title: 'Welcome' }); %>
+<body>
+  <%- include('../partials/header', { currentUser }); %>
+  
+  <h1>Send a Message</h1>
+
+  <div>
+
+  </div>
+
+  <% if (!conversation) { %>
+
+    <form action="/conversations" method="POST">
+      <textarea name="message" id="" cols="30" rows="3"></textarea>
+
+      <input type="hidden" name="sender" value="<%= currentUser._id %>">
+
+      <input type="hidden" name="item" value="<%= item._id %>">
+
+      <input type="hidden" name="receiver" value="<%= item.seller %>">
+
+      <button type="submit">Send</button>
+    </form>
+
+  <% } else { %>
+  
+    <form action="/messages" method="POST">
+      <textarea name="message" id="" cols="30" rows="3"></textarea>
+      
+      <input type="hidden" name="conversationid" value=<%= conversation._id %>>
+
+      <input type="hidden" name="senderid" value=<%= currentUser._id %>>
+
+      <button type="submit">Send</button>
+    </form>
+
+  <% } %>
+</body>
+</html>

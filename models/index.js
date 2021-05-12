@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const User = require('./User');
 const Item = require('./Item');
+const Conversation = require('./Conversation');
+const Message = require('./Message');
 
 const connectionString = process.env.MONGODB_URI;
 const mongooseOptions = {
@@ -26,5 +28,7 @@ mongoose.connection.on('error', (err) => {
 module.exports = {
   User,
   Item,
+  Conversation,
+  Message,
 };
 

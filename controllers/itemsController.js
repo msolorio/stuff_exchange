@@ -7,7 +7,7 @@ const db = require('../models');
 
 
 // Items Index Route ===========================================//
-router.get('/', protectRoute, async (req, res) => {
+router.get('/', async (req, res) => {
   const allItems = await db.Item.find({});
 
   res.render('./items/itemsIndex', {
@@ -20,7 +20,7 @@ router.get('/', protectRoute, async (req, res) => {
 
 
 // My Items ===================================================//
-router.get('/myitems', protectRoute, async (req, res) => {
+router.get('/myitems', async (req, res) => {
   // Get the logged in user's items
   db.Item.find({ seller: req.session.currentUser._id }, (err, usersItems) => {
     // Render template passing in items data
@@ -34,7 +34,7 @@ router.get('/myitems', protectRoute, async (req, res) => {
 
 
 // Items New Route ============================================//
-router.get('/new', protectRoute, (req, res) => {
+router.get('/new', (req, res) => {
   res.render('./items/itemsNew', {
     currentUser: req.session.currentUser,
     uploadcarePublicKey: process.env.UPLOADCARE_PUBLIC_KEY
@@ -44,22 +44,31 @@ router.get('/new', protectRoute, (req, res) => {
 
 
 // Items Show Route ===========================================//
-router.get('/:itemId', protectRoute, async (req, res) => {
+router.get('/:itemId', async (req, res) => {
   const foundItem = await db.Item.findById(req.params.itemId).populate('seller').exec();
-
+  
   const userIsSeller = req.session.currentUser._id === foundItem.seller.id;
+
+  // Find any associated convos associated with this item and user
+  const foundConvo = await db.Conversation.findOne({
+    item: req.params.itemId,
+    members: req.session.currentUser._id
+  });
+
+  console.log('found convo ==>', foundConvo);
 
   res.render('./items/itemsShow', {
     item: foundItem,
     userIsSeller: userIsSeller,
-    currentUser: req.session.currentUser
+    currentUser: req.session.currentUser,
+    convoPath: foundConvo ? foundConvo._id : 'new'
   });
 });
 
 
 
 
-router.post('/', protectRoute, async (req, res) => {
+router.post('/', async (req, res) => {
   const newItem = {
     itemName: req.body.itemName,
     description: req.body.description,
@@ -81,7 +90,7 @@ router.post('/', protectRoute, async (req, res) => {
 
 
 
-router.get('/:itemId/edit', protectRoute, async (req, res) => {
+router.get('/:itemId/edit', async (req, res) => {
   // Get data for item by id
   const item = await db.Item.findById(req.params.itemId);
 
@@ -92,7 +101,7 @@ router.get('/:itemId/edit', protectRoute, async (req, res) => {
 
 
 
-router.put('/:itemId', protectRoute, async (req, res) => {
+router.put('/:itemId', async (req, res) => {
   db.Item.findByIdAndUpdate(
     req.params.itemId,
     req.body,
@@ -108,7 +117,7 @@ router.put('/:itemId', protectRoute, async (req, res) => {
 
 
 
-router.delete('/:itemId', protectRoute, async (req, res) => {  
+router.delete('/:itemId', async (req, res) => {  
   await db.Item.findByIdAndDelete(req.params.itemId);
 
   res.redirect('/items');

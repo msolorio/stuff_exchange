@@ -5,7 +5,8 @@ const methodOverride = require('method-override');
 const protectRoute = require('./utilities/protectRoute');
 const authController = require('./controllers/authController');
 const itemsController = require('./controllers/itemsController');
-
+const conversationsController = require('./controllers/conversationsController');
+const messagesController = require('./controllers/messagesController');
 
 // Configuration ===================================================//
 const app = express();
@@ -38,6 +39,8 @@ app.use(session({
 // CONTROLLERS
 app.use('/users', authController);
 app.use('/items', protectRoute, itemsController);
+app.use('/conversations', protectRoute, conversationsController);
+app.use('/messages', protectRoute, messagesController);
 
 
 
