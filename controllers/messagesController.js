@@ -9,7 +9,7 @@ router.post('/', (req, res) => {
   // body
 
   const newMessage = {
-    sender: req.body.sender,
+    sender: req.body.senderid,
     body: req.body.message
   };
 

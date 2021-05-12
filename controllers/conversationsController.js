@@ -21,34 +21,59 @@ function renderConvoShow(req, res, convo, item) {
 
 
 
-// TODO: BREAK OUT INTO 2 SEPARATE TEMPLATES,
-// 1 FOR NEW CONVO AND ONE FOR EXISTING CONVO
-router.get('/:conversationId', (req, res) => {
-  
-  // Render new convo
-  if (req.params.conversationId === 'new') {
+router.get('/new', (req, res) => {
+  db.Item.findById(req.query.itemid, (err, foundItem) => {
+    if (err) return console.log(err);
 
-    db.Item.findById(req.query.itemid, (err, foundItem) => {
+    res.render('./conversations/conversationsNew', {
+      currentUser: req.session.currentUser,
+      item: foundItem
+    });
+  });
+})
+
+
+
+
+
+function findMessageRecipient(req, convo) {
+  return convo.members.find((member) => {
+    return member.id !== req.session.currentUser._id
+  });
+}
+
+
+
+
+
+router.get('/:conversationId', (req, res) => {
+  db.Conversation.findById(req.params.conversationId)
+    .populate('members')
+    .populate({
+      path: 'messages',
+      populate: { path: 'sender' }
+    })
+    .populate('item')
+    .exec((err, foundConvo) => {
       if (err) return console.log(err);
 
-      return renderConvoShow(req, res, null, foundItem);
-    });
+      // TODO: RENDER CONVO INFO AND MESSAGES TO TEMPLATE
+      console.log('found convo ==>', foundConvo);
 
-  // Find existing convo and render
-  } else {
+      const recipient = findMessageRecipient(req, foundConvo);
 
-    db.Conversation.findById(req.params.conversationId)
-      .populate('members messages item')
-      .exec((err, foundConvo) => {
-        if (err) return console.log(err);
+      console.log('recipient:', recipient);
 
-        // TODO: RENDER CONVO INFO AND MESSAGES TO TEMPLATE
-        console.log('found convo ==>', foundConvo);
-    
-        return renderConvoShow(req, res, foundConvo, null);
-      }
-    );
-  } 
+      // GET MESSAGE RECIPIENT
+
+  
+      res.render('./conversations/conversationsShow', {
+        currentUser: req.session.currentUser,
+        conversation: foundConvo,
+        recipient: recipient,
+      })
+    }
+  );
 });
 
 
