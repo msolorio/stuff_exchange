@@ -2,31 +2,27 @@ const express = require('express');
 const db = require('../models');
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  console.log('req body =>', req.body);
-  // conversation id
-  // sender
-  // body
+router.post('/', async (req, res) => {
 
   const newMessage = {
     sender: req.body.senderid,
     body: req.body.message
   };
 
-  db.Message.create(newMessage, (err, createdMessage) => {
-    if (err) return console.log(err);
+  try {
+    const createdMessage = await db.Message.create(newMessage);
 
-    db.Conversation.findByIdAndUpdate(
+    await db.Conversation.findByIdAndUpdate(
       req.body.conversationid,
       { $push: { messages: createdMessage._id } },
-      { new: true },
-      (err, updatedConvo) => {
-        if (err) return console.log(err);
-  
-        res.redirect(`/conversations/${req.body.conversationid}`);
-      }
-    )
-  });
-})
+      { new: true }
+    );
+
+    return res.redirect(`/conversations/${req.body.conversationid}`);
+
+  } catch(err) {
+    return console.log(err);
+  }
+});
 
 module.exports = router;

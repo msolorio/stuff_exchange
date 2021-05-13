@@ -45,12 +45,14 @@ router.post('/', async (req, res) => {
     };
   
     // Create new User
-    await db.User.create(newUser);
+    const createdUser = await db.User.create(newUser);
+
+    req.session.currentUser = createdUser;
 
     // TODO: Add createdUser as req.session.currentUser
     // TODO: Redirect to Account Page
     // Direct to login page
-    return res.redirect('/users/login');
+    return res.redirect('/users/myaccount');
 
   } catch(err) {
     console.log(err);
@@ -114,12 +116,14 @@ res.render('account', { currentUser: req.session.currentUser });
 ///////////////////////////////////////////////////////////////////////////
 // HANDLES LOGOUT
 ///////////////////////////////////////////////////////////////////////////
-router.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) return console.log(err);
+router.get('/logout', async (req, res) => {
+  try {
+    await req.session.destroy();
 
-    res.redirect('/');
-  });
+    return res.redirect('/');
+  } catch(err) {
+    return console.log(err);
+  }
 });
 
 module.exports = router;

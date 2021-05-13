@@ -22,14 +22,16 @@ router.get('/', async (req, res) => {
 // My Items ===================================================//
 router.get('/myitems', async (req, res) => {
   // Get the logged in user's items
-  db.Item.find({ seller: req.session.currentUser._id }, (err, usersItems) => {
-    // Render template passing in items data
-    res.render('./items/itemsMyItems', {
-      usersItems: usersItems,
-      currentUser: req.session.currentUser
-    });
+  const usersItems = await db.Item.find({ seller: req.session.currentUser._id });
+  
+  // Render template passing in items data
+  res.render('./items/itemsMyItems', {
+    usersItems: usersItems,
+    currentUser: req.session.currentUser
   });
 });
+
+
 
 
 
@@ -40,6 +42,7 @@ router.get('/new', (req, res) => {
     uploadcarePublicKey: process.env.UPLOADCARE_PUBLIC_KEY
   });
 });
+
 
 
 
@@ -80,6 +83,12 @@ router.post('/', async (req, res) => {
   try {
     const createdItem = await db.Item.create(newItem);
 
+    // Update User to add createdItem
+    await db.User.findByIdAndUpdate(
+      req.session.currentUser._id,
+      { $push: { items: createdItem } }
+    );
+
     res.redirect(`/items/${createdItem._id}`);
   } catch(err) {
     console.log(err);
@@ -102,25 +111,33 @@ router.get('/:itemId/edit', async (req, res) => {
 
 
 router.put('/:itemId', async (req, res) => {
-  db.Item.findByIdAndUpdate(
-    req.params.itemId,
-    req.body,
-    { new: true },
-    (err, updatedItem) => {
-      if (err) return console.log(err);
 
-      res.redirect(`/items/${req.params.itemId}`);
-    }
-  )
+  try {
+    await db.Item.findByIdAndUpdate(
+      req.params.itemId,
+      req.body,
+      { new: true }
+    );
+
+    res.redirect(`/items/${req.params.itemId}`);
+
+  } catch(err) {
+    return console.log(err);
+  }
 });
 
 
 
 
-router.delete('/:itemId', async (req, res) => {  
-  await db.Item.findByIdAndDelete(req.params.itemId);
+router.delete('/:itemId', async (req, res) => {
+  try {
+    await db.Item.findByIdAndDelete(req.params.itemId);
+    
+    res.redirect('/items');
 
-  res.redirect('/items');
+  } catch(err) {
+    return console.log(err);
+  }
 });
 
 module.exports = router;
