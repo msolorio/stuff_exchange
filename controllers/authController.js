@@ -41,7 +41,9 @@ router.post('/', async (req, res) => {
     const newUser = {
       username: req.body.username,
       email: req.body.email,
-      password: hashedPassword
+      password: hashedPassword,
+      conversations: [],
+      items: []
     };
   
     // Create new User

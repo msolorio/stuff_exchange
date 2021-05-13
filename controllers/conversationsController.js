@@ -100,6 +100,16 @@ router.post('/', async (req, res) => {
 
     console.log('created convo ==>', createdConvo);
 
+    await db.User.findByIdAndUpdate(
+      req.session.currentUser._id,
+      { $push: { conversations: createdConvo._id } }
+    );
+
+    await db.User.findByIdAndUpdate(
+      req.body.receiver,
+      { $push: { conversations: createdConvo._id } }
+    );
+
     return res.redirect(`/conversations/${createdConvo._id}`);
 
   } catch(err) {
