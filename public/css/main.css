@@ -5,3 +5,30 @@ body {
 .item-img {
   width: 150px;
 }
+
+/* **************************************** */
+/* CONVERSATION SHOW */
+/* **************************************** */
+.convo-itemImage {
+  max-height: 40px;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  border: 2px solid grey;
+  padding: 20px;
+}
+
+.message_currentUser {
+  background: blue;
+  color: white;
+  align-self: flex-end;
+}
+
+.message_recipient {
+  background: grey;
+  color: white;
+  align-self: flex-start;
+}

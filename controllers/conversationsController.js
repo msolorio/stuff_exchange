@@ -5,32 +5,22 @@ const router = express.Router();
 
 
 
-
 ////////////////////////////////////////////////////////
-// SHOW A CONVERSATION
+// SHOW NEW CONVERSATION CREATOR FORM
 ////////////////////////////////////////////////////////
-function renderConvoShow(req, res, convo, item) {
-  return res.render('./conversations/conversationsShow', {
-    currentUser: req.session.currentUser,
-    conversation: convo,
-    item: item
-  });
-}
-
-
-
-
-
-router.get('/new', (req, res) => {
-  db.Item.findById(req.query.itemid, (err, foundItem) => {
-    if (err) return console.log(err);
+router.get('/new', async (req, res) => {
+  try {
+    const foundItem = await db.Item.findById(req.query.itemid);
 
     res.render('./conversations/conversationsNew', {
       currentUser: req.session.currentUser,
       item: foundItem
     });
-  });
-})
+
+  } catch (err) {
+    return console.log(err);
+  }
+});
 
 
 
@@ -46,34 +36,36 @@ function findMessageRecipient(req, convo) {
 
 
 
-router.get('/:conversationId', (req, res) => {
-  db.Conversation.findById(req.params.conversationId)
-    .populate('members')
-    .populate({
-      path: 'messages',
-      populate: { path: 'sender' }
-    })
-    .populate('item')
-    .exec((err, foundConvo) => {
-      if (err) return console.log(err);
-
-      // TODO: RENDER CONVO INFO AND MESSAGES TO TEMPLATE
-      console.log('found convo ==>', foundConvo);
-
-      const recipient = findMessageRecipient(req, foundConvo);
-
-      console.log('recipient:', recipient);
-
-      // GET MESSAGE RECIPIENT
-
-  
-      res.render('./conversations/conversationsShow', {
-        currentUser: req.session.currentUser,
-        conversation: foundConvo,
-        recipient: recipient,
+////////////////////////////////////////////////////////
+// SHOW A CONVERSATION
+////////////////////////////////////////////////////////
+router.get('/:conversationId', async (req, res) => {
+  try {
+    const foundConvo = await db.Conversation
+      .findById(req.params.conversationId)
+      .populate('members')
+      .populate({
+        path: 'messages',
+        populate: { path: 'sender' }
       })
-    }
-  );
+      .populate('item')
+      .exec();
+
+    if (!foundConvo) return res.redirect(`/users/myaccount`);
+
+    const recipient = findMessageRecipient(req, foundConvo);
+
+    console.log('recipient:', recipient);
+
+    res.render('./conversations/conversationsShow', {
+      currentUser: req.session.currentUser,
+      conversation: foundConvo,
+      recipient: recipient,
+    });
+
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 
@@ -83,13 +75,11 @@ router.get('/:conversationId', (req, res) => {
 ////////////////////////////////////////////////////////
 // CREATE A NEW CONVERSATION
 ////////////////////////////////////////////////////////
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   console.log('req body ==>', req.body)
 
-  // The sender
-  // The receiver
-  // The message
-  // The item associated
+// On Convo create add convo to User
+// On Item create add item to User
 
   // CREATE MESSAGE
   const newMessage = {
@@ -97,8 +87,8 @@ router.post('/', (req, res) => {
     body: req.body.message
   };
 
-  db.Message.create(newMessage, (err, createdMessage) => {
-    if (err) return console.log(err);
+  try {
+    const createdMessage = await db.Message.create(newMessage);
 
     const newConversation = {
       members: [req.body.sender, req.body.receiver],
@@ -106,12 +96,17 @@ router.post('/', (req, res) => {
       item: req.body.item
     };
 
-    db.Conversation.create(newConversation, (err, createdConvo) => {
-      if (err) return console.log(err);
+    const createdConvo = await db.Conversation.create(newConversation);
 
-      res.redirect(`/conversations/${createdConvo._id}`);
-    });
-  });
+    console.log('created convo ==>', createdConvo);
+
+    return res.redirect(`/conversations/${createdConvo._id}`);
+
+  } catch(err) {
+    
+    return console.log(err);
+
+  }
 });
 
 module.exports = router;

@@ -7,16 +7,20 @@
   <h1>Message</h1>
 
   <div>
-    <p>Send to <%= recipient.username %></p>
+    <p>Send to: <%= recipient.username %></p>
 
-    <ul>
+    <p>Item: <%= conversation.item.itemName %></p>
+
+    <p><img class="convo-itemImage" src="<%= conversation.item.img %>" alt=""></p>
+
+    <ul class="messages">
       <% conversation.messages.forEach((message) => { %>
 
         <% if (currentUser._id == message.sender._id) { %>
-          <li class="current-user"><%= message.body %></li>
+          <li class="message_currentUser"><%= message.body %></li>
 
         <% } else { %>
-          <li class="other-user"><%= message.body %></li>
+          <li class="message_recipient"><%= message.body %></li>
           
         <% } %>
 
