@@ -83,12 +83,12 @@ router.post('/login', async (req, res) => {
     const foundUser = await db.User.findOne({ username: req.body.username });
   
     if (!foundUser) {
-      return res.redirect('/login?message=No user found with those credentials');
+      return res.redirect('/users/login?message=No user found with those credentials');
     }
 
     // Verify password
     const isMatch = await bcrypt.compare(req.body.password, foundUser.password);
-    if (!isMatch) return res.redirect('/login?message=No user found with those credentials');
+    if (!isMatch) return res.redirect('/users/login?message=No user found with those credentials');
 
     // Add username to session data
     req.session.currentUser = foundUser;
@@ -98,7 +98,7 @@ router.post('/login', async (req, res) => {
 
   } catch(err) {
     console.log(err);
-    return res.redirect('/login?message=There was an issue verifying your user.');
+    return res.redirect('/users/login?message=There was an issue verifying your user.');
   }
 });
 

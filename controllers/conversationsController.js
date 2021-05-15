@@ -4,6 +4,56 @@ const router = express.Router();
 
 
 
+// IF DECIDE TO HAVE MORE THAN 2 PEOPLE PER CONVO
+// UPDATE TO RETURN AN ARRAY OF OPPOSITE MEMBERS
+function findOppositeConvoMember(req, convo) {
+  return convo.members.find((member) => {
+    return member.id !== req.session.currentUser._id
+  });
+}
+
+
+
+////////////////////////////////////////////////////////
+// CONVERSATION INDEX
+////////////////////////////////////////////////////////
+router.get('/', async (req, res) => {
+  try {
+    const allUsersConvos = await db.Conversation.find({
+      members: req.session.currentUser._id
+    })
+    .populate({
+      path: 'messages',
+      populate: { path: 'sender' }
+    })
+    .populate('members')
+    .populate('item');
+
+    const modifiedConvos = allUsersConvos.map((convo) => {
+      convo.oppositeMember = findOppositeConvoMember(req, convo);
+      convo.lastMessage = convo.messages[convo.messages.length - 1];
+      convo.lastSender = (
+        convo.lastMessage.sender.id === req.session.currentUser._id
+        ? 'You'
+        : convo.lastMessage.sender.username
+      );
+      
+      return convo;
+    });
+
+    res.render('./conversations/conversationsIndex', {
+      modifiedConvos,
+      currentUser: req.session.currentUser
+    });
+
+  } catch (err) {
+    return console.log(err);
+  }
+});
+
+
+
+
 
 ////////////////////////////////////////////////////////
 // SHOW NEW CONVERSATION CREATOR FORM
@@ -26,15 +76,6 @@ router.get('/new', async (req, res) => {
 
 
 
-function findMessageRecipient(req, convo) {
-  return convo.members.find((member) => {
-    return member.id !== req.session.currentUser._id
-  });
-}
-
-
-
-
 
 ////////////////////////////////////////////////////////
 // SHOW A CONVERSATION
@@ -43,19 +84,19 @@ router.get('/:conversationId', async (req, res) => {
   try {
     const foundConvo = await db.Conversation
       .findById(req.params.conversationId)
-      .populate('members')
       .populate({
         path: 'messages',
         populate: { path: 'sender' }
       })
+      .populate('members')
       .populate('item')
       .exec();
 
     if (!foundConvo) return res.redirect(`/users/myaccount`);
 
-    const recipient = findMessageRecipient(req, foundConvo);
+    const recipient = findOppositeConvoMember(req, foundConvo);
 
-    console.log('recipient:', recipient);
+    console.log('foundConvo:', foundConvo);
 
     res.render('./conversations/conversationsShow', {
       currentUser: req.session.currentUser,

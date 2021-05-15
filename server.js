@@ -31,12 +31,12 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7 * 2
+    maxAge: 1000 * 60 * 60 * 24 * 7 * 2 // Session cookie is valid for 2 weeks
   }
 }));
 
 
-// CONTROLLERS
+// CONTROLLERS======================================================//
 app.use('/users', authController);
 app.use('/items', protectRoute, itemsController);
 app.use('/conversations', protectRoute, conversationsController);

@@ -16,11 +16,13 @@ const userSchema = mongoose.Schema({
   },
   items: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Item'
+    ref: 'Item',
+    required: true
   }],
   conversations: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Conversation'
+    ref: 'Conversation',
+    required: true
   }]
 });
 

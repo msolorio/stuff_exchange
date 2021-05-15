@@ -3,15 +3,18 @@ const mongoose = require('mongoose');
 const conversationSchema = new mongoose.Schema({
   members: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   }],
   messages: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Message'
+    ref: 'Message',
+    required: true
   }],
   item: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Item'
+    ref: 'Item',
+    required: true
   }
 }, { timestamps: true });
 

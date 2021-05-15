@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head', { title: 'Start Conversation' }); %>
+<body>
+  <%- include('../partials/header', { currentUser }); %>
+
+  <h1>Inbox</h1>
+
+  <ul>
+    <% modifiedConvos.forEach((convo) => { %>
+      <a class="convoList-convo" href="/conversations/<%= convo._id %>">
+        <li>
+          <p><%= convo.oppositeMember.username %></p>
+          <p><%= convo.lastSender %>: <%= convo.lastMessage.body %></p>
+          <img class="convoList-itemImage" src="<%= convo.item.img %>" alt="<%= convo.item.itemName %>">
+        </li>
+      </a>
+    <% }) %>
+  </ul>
+  
+</body>
+</html>

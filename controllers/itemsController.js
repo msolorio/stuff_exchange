@@ -58,8 +58,6 @@ router.get('/:itemId', async (req, res) => {
     members: req.session.currentUser._id
   });
 
-  console.log('found convo ==>', foundConvo);
-
   res.render('./items/itemsShow', {
     item: foundItem,
     userIsSeller: userIsSeller,
@@ -104,7 +102,10 @@ router.get('/:itemId/edit', async (req, res) => {
   const item = await db.Item.findById(req.params.itemId);
 
   // Serve up edit template
-  res.render('./items/itemsEdit', { item });
+  res.render('./items/itemsEdit', {
+    item,
+    currentUser: req.session.currentUser
+  });
 });
 
 
